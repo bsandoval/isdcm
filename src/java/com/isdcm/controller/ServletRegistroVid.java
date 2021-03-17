@@ -98,6 +98,11 @@ public class ServletRegistroVid extends HttpServlet {
         // Añadir dato a la base de datos
         VideoDTO video = new VideoDTO(0, ti, au, fe, du, 0, de, fo);
         videoDAO.insertVideo(video);
+	    
+	List<VideoDTO> ListV = videoDAO.getVideos();
+        request.setAttribute("lista", ListV);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("listadoVid.jsp");
+        dispatcher.forward(request, response);
     }
 
     /**
