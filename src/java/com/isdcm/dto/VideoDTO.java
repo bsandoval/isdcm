@@ -6,8 +6,6 @@ import java.time.LocalTime;
 import java.sql.*;
 
 public class VideoDTO {
-    
-    // Instance Variables
     private int id;
     private String titulo;
     private String autor;
@@ -16,6 +14,9 @@ public class VideoDTO {
     private int reproducciones;
     private String descripcion;
     private String formato;
+    
+    public VideoDTO() {
+    }
     
     public VideoDTO(int id, String ti, String au, LocalDate fe, LocalTime du, int re, String de, String fo){
         this.id = id;

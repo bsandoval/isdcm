@@ -4,6 +4,7 @@ import com.isdcm.dao.VideoDAO;
 import com.isdcm.dto.VideoDTO;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import javax.servlet.RequestDispatcher;
 
 
 @WebServlet(urlPatterns = {"/register"})
@@ -65,29 +67,37 @@ public class ServletRegistroVid extends HttpServlet {
 
     
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
-            System.out.println(request);
-            String ti = request.getParameter("title");
-            String au = request.getParameter("author");
-            LocalDate fe = LocalDate.parse(request.getParameter("creation_date"));
-            LocalTime du = LocalTime.parse(request.getParameter("duration"));
-            String de = request.getParameter("desciption");
-            String fo = request.getParameter("format");
-            
-            System.out.println("title: " + ti);
-            System.out.println("author: " + au);
-            System.out.println("creation_date: " + fe);
-            System.out.println("duration: " + du);
-            System.out.println("desciption: " + de);
-            System.out.println("format: " + fo);
-            
-            
-            // TODO: Añadir un check que nos confirma que no hay repeticiones en la base de datos
-            
-            
-            // Añadir dato a la base de datos
-            VideoDTO video = new VideoDTO(0, ti, au, fe, du, 0, de, fo);
-            videoDAO.insertVideo(video);
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String action = request.getServletPath();
+        System.out.println("Entra a doPost con action: "+action);
+        try {
+            switch (action) {
+            case "/register":
+                    register(request, response);
+                    break;
+            }
+        }
+        catch (SQLException ex) {
+            throw new ServletException(ex);
+        }
+    }
+    
+    private void register(HttpServletRequest request, HttpServletResponse response)
+        throws SQLException, IOException, ServletException {
+        String ti = request.getParameter("title");
+        String au = request.getParameter("author");
+        LocalDate fe = LocalDate.parse(request.getParameter("creation_date"));
+        LocalTime du = LocalTime.parse(request.getParameter("duration"));
+        String de = request.getParameter("desciption");
+        String fo = request.getParameter("format");
+
+        // TODO: Añadir un check que nos confirma que no hay repeticiones en la base de datos
+
+
+        // Añadir dato a la base de datos
+        VideoDTO video = new VideoDTO(0, ti, au, fe, du, 0, de, fo);
+        videoDAO.insertVideo(video);
     }
 
     /**
