@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<DIDL xmlns="urn:mpeg:mpeg21:2002:02-DIDL-NS" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="urn:mpeg:mpeg21:2002:02-DIDL-NS didl.xsd">
+	<Item>
+		<Component>
+			<Descriptor>
+				<Statement mimeType="text/xml">
+					<metadata>
+						<id>1</id>
+						<titulo>Lo Imposible</titulo>
+						<autor>Juan Antonio Bayona</autor>
+						<anyo>2012</anyo>
+						<duracion>107</duracion>
+						<reproducciones>2388</reproducciones>
+					</metadata>
+				</Statement>
+			</Descriptor>
+			<Resource ref="film1li.mp4" mimeType="video/mp4"/>
+		</Component>
+	</Item>
+</DIDL>
