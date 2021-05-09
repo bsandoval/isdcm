@@ -97,7 +97,7 @@ public class ServletUsuarios extends HttpServlet {
             if (user != null) {
                 HttpSession session = request.getSession();
                 session.setAttribute("user", user);
-                destPage = "video.jsp";
+                destPage = "security.jsp";
             } else {
                 request.setAttribute("errorMsg", "Invalid email/password");
             }
