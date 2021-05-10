@@ -27,7 +27,6 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class VideoSecurityHelper {
     private static final String SECRET_KEY = "t0L64tGfVBU11zuhvM7ksA==";
-    private static final byte[] THE_KEY = {0x00,0x32,0x22,0x11,0x00,0x00,0x00,0x00,0x00,0x23,0x00,0x00,0x00,0x00,0x00,0x00};
     
     public static void encryptVideo() 
             throws IOException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException {

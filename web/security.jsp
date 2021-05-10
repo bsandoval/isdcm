@@ -22,7 +22,7 @@ if(session.getAttribute("user")== null) //check for existing session
             <input type="radio" value="3" name="group1"> Video Decrypt
             
             <input type="file" name="file" />
-            <input type="submit" value="upload" />
+            <input type="submit" value="Subir Fichero" />
         </form>
    </body>
    

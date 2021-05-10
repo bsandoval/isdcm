@@ -34,19 +34,29 @@ public class ServletUpload extends HttpServlet {
                
                 String type = null;
                 
+                // Este for lee cada uno de los parametros que se le suben (radioButton y el fichero)
                 for(FileItem item : multiparts){
+                    // Para los ficheros del Upload
                     if(!item.isFormField()){
-                        String name = new File(item.getName()).getName();
-                        item.write( new File(UPLOAD_DIRECTORY + "/inputVideo.mp4"));
-                        System.out.println(UPLOAD_DIRECTORY + "/inputVideo.mp4");
+                        // Si el item es un fichero mp4 ejecta esto
+                        if (item.getContentType().equals("videos/mp4")){
+                            String name = new File(item.getName()).getName();
+                            item.write( new File(UPLOAD_DIRECTORY + "/inputVideo.mp4"));
+                        }
+                        // Si el video es otro tipo de fichero como un XML ejecuta esto
+                        else {
+                            
+                        }
                     }
+                    // Para los radioButton
                     else {
                         type = item.getString();
                     }
                 }
              
-                if (null == type){ // Desencriptar Video
-                    System.out.println("Este caso no tendria que pasar nunca");
+                if (null == type){
+                    request.setAttribute("message",
+                                 "The user has not select a radioButton. This means that the user has modify the HTML");
                 }
                 else switch (type) {
                     case "0": // Encriptar XML
