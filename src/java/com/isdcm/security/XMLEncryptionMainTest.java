@@ -5,7 +5,6 @@
  */
 package com.isdcm.security;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import javax.xml.transform.OutputKeys;
@@ -17,40 +16,27 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 
 /**
- *
+ * This is an example of how to use the utility class: XMLSecurityHelper
  * @author fiblabs
  */
 public class XMLEncryptionMainTest {
     private static final String SECRET_KEY = "31d9bd527f0861c1355459929e11b90b";
     
     public static void main(String args[]) throws Exception {
-        String xmlPath = "web/WEB-INF/xml/didlFilm1.xml";
-        Document xmlDocument = loadDocument(xmlPath);
-        XMLSecurityHelper.encrypt(xmlDocument, SECRET_KEY); //encrypted into "build/encryptedInfo.xml"
+        String inputPath = "build/web/WEB-INF/xml/didlFilm1.xml";
+        String outputPath = "build/web/WEB-INF/output/encryptedInfo.xml";
         
-        String encryptedPath = "build/encryptedInfo.xml";
-        Document encryptedDocument = loadDocument(encryptedPath);
+        XMLSecurityHelper.encrypt(inputPath, outputPath, SECRET_KEY); //encrypted into "build/web/WEB-INF/output/encryptedInfo.xml"
+        Document encryptedDocument = XMLSecurityHelper.loadDocument(outputPath);
         System.out.println("Encrypted document: ");
         printDocument(encryptedDocument);
-        XMLSecurityHelper.decrypt(xmlDocument, SECRET_KEY); //encrypted into "build/decryptedInfo.xml"
         
-        String decryptedPath = "build/decryptedInfo.xml";
-        Document decryptedDocument = loadDocument(decryptedPath);
+        inputPath = "build/web/WEB-INF/output/encryptedInfo.xml";
+        outputPath = "build/web/WEB-INF/output/decryptedInfo.xml";
+        XMLSecurityHelper.decrypt(inputPath, outputPath, SECRET_KEY); //encrypted into "build/web/WEB-INF/output/decryptedInfo.xml"
+        Document decryptedDocument = XMLSecurityHelper.loadDocument(outputPath);
         System.out.println("Decrypted document: ");
         printDocument(decryptedDocument);
-    }
-    
-    private static Document loadDocument(String fileName) throws Exception {
-        File encryptionFile = new File(fileName);
-        javax.xml.parsers.DocumentBuilderFactory dbf =
-            javax.xml.parsers.DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
-        javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
-        Document document = db.parse(encryptionFile);
-        System.out.println(
-            "Document loaded from " + encryptionFile.toURI().toURL().toString()
-        );
-        return document;
     }
     
     private static void printDocument(Document doc) throws IOException, TransformerException {

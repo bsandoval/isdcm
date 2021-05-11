@@ -1,10 +1,10 @@
 package com.isdcm.controller;
 
 import com.isdcm.security.VideoSecurityHelper;
+import com.isdcm.security.XMLSecurityHelper;
 import javax.servlet.annotation.WebServlet;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.List;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -18,13 +18,16 @@ import org.apache.commons.io.FileUtils;
 
 @WebServlet(urlPatterns = "/upload")
 public class ServletUpload extends HttpServlet {
-    private final String UPLOAD_DIRECTORY = "C:\\Users\\micky\\Documents\\NetBeansProjects\\isdcm\\web\\WEB-INF\\video";
+    private final String UPLOAD_DIRECTORY = "/input";
+    private final String OUTPUT_DIRECTORY = "/output";
+    private final String SECRET_KEY = "t0L64tGfVBU11zuhvM7ksA==";
    
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        FileUtils.cleanDirectory(new File(UPLOAD_DIRECTORY)); 
+        String webInfPath = getServletConfig().getServletContext().getRealPath("/WEB-INF");
+        FileUtils.cleanDirectory(new File(webInfPath + UPLOAD_DIRECTORY));
+        FileUtils.cleanDirectory(new File(webInfPath + OUTPUT_DIRECTORY)); 
         
         //process only if its multipart content
         if(ServletFileUpload.isMultipartContent(request)){
@@ -33,23 +36,23 @@ public class ServletUpload extends HttpServlet {
                                          new DiskFileItemFactory()).parseRequest(request);
                
                 String type = null;
+                String inputPath = null;
+                String outputPath = null;
                 
                 // Este for lee cada uno de los parametros que se le suben (radioButton y el fichero)
                 for(FileItem item : multiparts){
                     // Para los ficheros del Upload
                     if(!item.isFormField()){
-                        // Si el item es un fichero mp4 ejecta esto
-                        if (item.getContentType().equals("videos/mp4")){
-                            String name = new File(item.getName()).getName();
-                            item.write( new File(UPLOAD_DIRECTORY + "/inputVideo.mp4"));
+                        // Si el item es un fichero mp4 ejecuta esto
+                        if (item.getContentType().equals("video/mp4")){
+                            inputPath = webInfPath + UPLOAD_DIRECTORY + "/inputVideo.mp4";
+                            outputPath = webInfPath + OUTPUT_DIRECTORY + "/outputVideo.mp4";
+                        } else { // Si el video es otro tipo de fichero como un XML ejecuta esto
+                            inputPath = webInfPath + UPLOAD_DIRECTORY + "/inputXml.xml";
+                            outputPath = webInfPath + OUTPUT_DIRECTORY + "/outputXml.xml";
                         }
-                        // Si el video es otro tipo de fichero como un XML ejecuta esto
-                        else {
-                            
-                        }
-                    }
-                    // Para los radioButton
-                    else {
+                        item.write( new File(inputPath));
+                    } else { // Si es un radioButton, obtenemos el valor
                         type = item.getString();
                     }
                 }
@@ -57,17 +60,18 @@ public class ServletUpload extends HttpServlet {
                 if (null == type){
                     request.setAttribute("message",
                                  "The user has not select a radioButton. This means that the user has modify the HTML");
-                }
-                else switch (type) {
+                } else switch (type) {
                     case "0": // Encriptar XML
+                        XMLSecurityHelper.encrypt(inputPath, outputPath, SECRET_KEY);
                         break;
                     case "1": // Desencriptar XML
+                        XMLSecurityHelper.decrypt(inputPath, outputPath, SECRET_KEY);
                         break;
                     case "2": // Encriptar Video
-                        VideoSecurityHelper.encryptVideo();
+                        VideoSecurityHelper.encryptVideo(inputPath, outputPath, SECRET_KEY);
                         break;
                     default: // Desencriptar Video
-                        VideoSecurityHelper.decryptVideo();
+                        VideoSecurityHelper.decryptVideo(inputPath, outputPath, SECRET_KEY);
                         break;
                 }
                 
